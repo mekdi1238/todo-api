@@ -70,6 +70,23 @@ else if (req.url.startsWith("/todos/") && req.method === "PUT") {
         }
     });
 }
+else if (req.url.startsWith("/todos/") && req.method === "DELETE") {
+    const id = parseInt(req.url.split("/")[2]);
+    const todos = readTodos();
+
+    const index = todos.findIndex(t => t.id === id);
+
+    if (index === -1) {
+        res.statusCode = 404;
+        return res.end(JSON.stringify({ message: "Todo not found" }));
+    }
+
+    const deletedTodo = todos.splice(index, 1);
+    writeTodos(todos);
+
+    res.statusCode = 200;
+    res.end(JSON.stringify({ message: "Todo deleted", deleted: deletedTodo[0] }));
+}
 
 
 else if(req.url === "/todos" && req.method === "POST"){
